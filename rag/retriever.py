@@ -12,17 +12,17 @@ from config import OPENROUTER_MODEL, OPENROUTER_BASE_URL
 load_dotenv()
 
 def _get_api_key():
-    # Streamlit Cloud secrets take priority, fallback to .env
     try:
         import streamlit as st
         return st.secrets["OPENROUTER_API_KEY"]
     except Exception:
         return os.getenv("OPENROUTER_API_KEY")
 
-client = OpenAI(
-    api_key=_get_api_key(),
-    base_url=OPENROUTER_BASE_URL,
-)
+def _get_client():
+    return OpenAI(
+        api_key=_get_api_key(),
+        base_url=OPENROUTER_BASE_URL,
+    )
 
 RAG_SYSTEM_PROMPT = """You are an expert pharmaceutical analyst specializing in asthma biologics, particularly Mepolizumab (Nucala).
 You answer questions based on real patient and healthcare professional discussions from Reddit.
@@ -96,7 +96,7 @@ def rag_query(query: str, filters: dict = None) -> str:
         {"role": "user", "content": f"Context from Reddit discussions:\n\n{context}\n\nQuestion: {query}"}
     ]
 
-    response = client.chat.completions.create(
+    response = _get_client().chat.completions.create(
         model=OPENROUTER_MODEL,
         messages=messages,
         temperature=0.3,
