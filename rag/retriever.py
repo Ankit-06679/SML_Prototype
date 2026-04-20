@@ -12,11 +12,22 @@ from config import OPENROUTER_MODEL, OPENROUTER_BASE_URL
 load_dotenv()
 
 def _get_api_key():
+    # Try Streamlit secrets first
     try:
         import streamlit as st
-        return st.secrets["OPENROUTER_API_KEY"]
+        key = st.secrets.get("OPENROUTER_API_KEY")
+        if key:
+            return key
     except Exception:
-        return os.getenv("OPENROUTER_API_KEY")
+        pass
+    # Fallback to environment variable
+    key = os.getenv("OPENROUTER_API_KEY")
+    if not key:
+        raise ValueError(
+            "OPENROUTER_API_KEY not found. "
+            "Set it in Streamlit secrets or .env file."
+        )
+    return key
 
 def _get_client():
     return OpenAI(

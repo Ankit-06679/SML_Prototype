@@ -82,10 +82,13 @@ def rag_chat_dialog():
 
         with st.chat_message("assistant"):
             with st.spinner("Searching and reasoning..."):
-                filters = None
-                if stakeholder_filter != "All":
-                    filters = {"stakeholder": stakeholder_filter}
-                answer = rag_query(query, filters=filters)
+                try:
+                    filters = None
+                    if stakeholder_filter != "All":
+                        filters = {"stakeholder": stakeholder_filter}
+                    answer = rag_query(query, filters=filters)
+                except Exception as e:
+                    answer = f"Error: {str(e)}"
             st.markdown(answer)
             st.session_state.chat_history.append({"role": "assistant", "content": answer})
 
