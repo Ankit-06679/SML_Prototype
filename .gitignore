@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+data/chroma_db/
+data/raw_posts.json
+data/processed_posts.json
+data/SML_Mepolizumab_Report.xlsx
+.streamlit/secrets.toml
